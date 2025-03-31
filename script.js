@@ -28,3 +28,4 @@ const advanceRound = () => {
     currentRoundNumber++;
 }
 
+console.log(currentRoundNumber);
