@@ -14,10 +14,19 @@ const guessButton = document.getElementById('guess');
 const nextRoundButton = document.getElementById('next-round')
 
 guessButton.addEventListener('click', () => {
+  // Retrieve the player's guess and ensure it's a number
+  let currentHumanGuess = Number(humanGuessInput.value);
+
+  // Validate input before proceeding
+  if (isNaN(currentHumanGuess) || currentHumanGuess < 0 || currentHumanGuess > 9) {
+    alert("Your guess must be a number between 0 and 9.");
+    humanGuessInput.value = Math.max(0, Math.min(9, currentHumanGuess || 0));
+    handleValueChange(humanGuessInput.value);
+    return;
+  }
+
   // Generate the target value
   target = generateTarget();
-  // Retrieve the player's guess
-  const currentHumanGuess = humanGuessInput.value;
   // Make a random 'computer guess'
   const computerGuess = Math.floor(Math.random() * 10);
 
@@ -39,8 +48,6 @@ guessButton.addEventListener('click', () => {
   } else {
     computerWinsDisplay.innerText = 'Computer Wins!!!';
   }
-
-  // winnerDisplay.innerText = humanIsWinner ? 'You win!' : 'Computer wins!';
 
   // Display the current scores:
   humanScoreDisplay.innerText = humanScore;
@@ -84,13 +91,18 @@ subtractButton.addEventListener('click', () => {
 });
 
 const handleValueChange = value => {
-  if (value > 0 && value <= 9) {
-    subtractButton.removeAttribute('disabled');
+  value = Number(value);
+  if (isNaN(value) || value < 0) {
+    humanGuessInput.value = 0;
+    subtractButton.setAttribute('disabled', true);
     addButton.removeAttribute('disabled');
   } else if (value > 9) {
+    humanGuessInput.value = 9;
     addButton.setAttribute('disabled', true);
-  } else if (value <= 0) {
-    subtractButton.setAttribute('disabled', true);
+    subtractButton.removeAttribute('disabled');
+  } else {
+    subtractButton.disabled = value <= 0;
+    addButton.disabled = value >= 9;
   }
 }
 
